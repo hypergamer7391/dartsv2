@@ -9,16 +9,17 @@
                     <div class="score">{{ get_score_for_player(players[0]?.name) }}</div>
                 </div>
                 <div class="throws">
-                    <div class="throw-box">
+                    <div class="throw-box" :class="{ active: am_zug == 1 && bereits_geworfen == 0 }">
 
-                        <div class="geworfen-score">{{ players[0]?.wurf1 }}</div>
+                        <div class="geworfen-score" 
+                        >{{ players[0]?.wurf1 }}</div>
                         <div class="needed-score">{{ players[0]?.wurf1_feld }}</div>
                     </div>
-                    <div class="throw-box">
+                    <div class="throw-box" :class="{ active: am_zug == 1 && bereits_geworfen == 1 }">
                         <div class="needed-score">{{ players[0]?.wurf2_feld }}</div>
                         <div class="geworfen-score">{{ players[0]?.wurf2 }}</div>
                     </div>
-                    <div class="throw-box">
+                    <div class="throw-box" :class="{ active: am_zug == 1 && bereits_geworfen == 2 }">
                         <div class="needed-score">{{ players[0]?.wurf3_feld }}</div>
                         <div class="geworfen-score">{{ players[0]?.wurf3 }}</div>
                     </div>
@@ -36,16 +37,16 @@
                     <div class="score">{{ get_score_for_player(players[1]?.name) }}</div>
                 </div>
                 <div class="throws">
-                    <div class="throw-box">
+                    <div class="throw-box" :class="{ active: am_zug == 2 && bereits_geworfen == 0 }">
 
                         <div class="geworfen-score">{{ players[1]?.wurf1 }}</div>
                         <div class="needed-score">{{ players[1]?.wurf1_feld }}</div>
                     </div>
-                    <div class="throw-box">
+                    <div class="throw-box" :class="{ active: am_zug == 2 && bereits_geworfen == 1 }">
                         <div class="needed-score">{{ players[1]?.wurf2_feld }}</div>
                         <div class="geworfen-score">{{ players[1]?.wurf2 }}</div>
                     </div>
-                    <div class="throw-box">
+                    <div class="throw-box" :class="{ active: am_zug == 2 && bereits_geworfen == 2 }">
                         <div class="needed-score">{{ players[1]?.wurf3_feld }}</div>
                         <div class="geworfen-score">{{ players[1]?.wurf3 }}</div>
                     </div>
@@ -705,6 +706,10 @@ body {
 
 .orange {
     background-color: #ff9d00;
+}
+
+.active {
+    background-color: #af700b;
 }
 
 /* Animation für das Einblenden */
