@@ -195,8 +195,24 @@ const handleRoundCreated = (newNames, points) => {
     console.log("Spieler für neue Runde:", roundData.value);
 };
 
-const handleRematch = () => {
-    handleRoundCreated(aktuelle_runde.value.players, aktuelle_runde.value.start)
+async function handleRematch(){
+    const neuesSpiel = {
+    spieler: [players.value[0].name, players.value[1].name],
+    punkte: [players.value[0].score_voher, players.value[1].score_voher]
+  }
+
+  const res = await fetch('https://dartsv2backend.onrender.com/api/games', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(neuesSpiel)
+  })
+
+  const hinzugefuegt = await res.json()
+  console.log(hinzugefuegt)
+  router.push(`/duell/${hinzugefuegt.id}`);
+   
     WinScreen.value.close()
 }
 
