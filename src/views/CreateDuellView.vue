@@ -22,7 +22,7 @@
                 </ul>
 
                 <button @click="createRound" :disabled="players.length < 2" class="create-round-button">
-                    Runde erstellen
+                    Runde erstellen 
                 </button>
                 <button @click="cancel"  class="create-round-button">
                     Zurück
