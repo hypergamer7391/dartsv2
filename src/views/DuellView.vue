@@ -671,7 +671,7 @@ body {
 
 
     /* Breite anpassen */
-    height: 70vh;
+    height: 60vh;
     /* Höhe anpassen */
     
     background: #333;
