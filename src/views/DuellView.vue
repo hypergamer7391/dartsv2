@@ -149,7 +149,7 @@ const game = ref(null)
 
 
 const players = ref([])
-const inputs = ref([1, 2, 3, 4, 5, "2x", 6, 7, 8, 9, 10, "3x", 11, 12, 13, 14, 15, "Bull", 16, 17, 18, 19, 20, "Bulls-Eye"])
+const inputs = ref([1, 2, 3, 4, 5, "2x", 6, 7, 8, 9, 10, "3x", 11, 12, 13, 14, 15, "Bull", 16, 17, 18, 19, 20, "0"])
 const am_zug = ref(1)
 const bereits_geworfen = ref(0)
 const multiplikator = ref(1)
@@ -303,7 +303,7 @@ function wurf(value, faktor, orginal_value) {
     let punkte_voher = players.value[am_zug.value - 1].score
     let condition1 = punkte_voher < value
     let condition2_1 = punkte_voher === value && faktor !== 2 
-    let condition2_2 = punkte_voher === value &&  orginal_value !== "Bulls-Eye"
+    let condition2_2 = punkte_voher === value &&  orginal_value == "Bull" && faktor === 2
     let condition2 = condition2_1 && condition2_2
     let condition3 = punkte_voher-value == 1 && bereits_geworfen.value == 2
     console.log(condition1, condition2_1, condition2_2, condition3)
@@ -415,8 +415,12 @@ function button_click(value) {
             multiplikator.value = 1
         }
     }
-    else if (value == "Bull") { wurf(25, 1, "Bull") }
-    else if (value == "Bulls-Eye") { wurf(50, 1, "Bulls-Eye") }
+    else if (value == "Bull" && multiplikator.value === 1) { wurf(25, 1, "Bull")
+    multiplikator.value = 1
+     }
+    else if (value == "Bull" && multiplikator.value === 2) { wurf(50, 1, "Bulls-Eye")
+    multiplikator.value = 1
+     }
 }
 
 function next_player() {
