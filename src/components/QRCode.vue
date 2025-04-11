@@ -1,4 +1,4 @@
-<template>
+<!-- <template>
   <div class="flex flex-col items-center p-4">
     <VueQrcode :value="text" :size="size" />
   </div>
@@ -19,3 +19,4 @@ defineProps({
   }
 });
 </script>
+ -->
