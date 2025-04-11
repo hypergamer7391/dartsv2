@@ -196,22 +196,7 @@ const handleRoundCreated = (newNames, points) => {
 };
 
 async function handleRematch(){
-    const neuesSpiel = {
-    spieler: [players.value[0].name, players.value[1].name],
-    punkte: [players.value[0].score_voher, players.value[1].score_voher]
-  }
-
-  const res = await fetch('https://dartsv2backend.onrender.com/api/games', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(neuesSpiel)
-  })
-
-  const hinzugefuegt = await res.json()
-  console.log(hinzugefuegt)
-  router.push(`/duell/${hinzugefuegt.id}`);
+    location.reload();
    
     WinScreen.value.close()
 }
@@ -314,12 +299,13 @@ function erstelleRangliste() {
 
 function wurf(value, faktor, orginal_value) {
     save_changes(players.value, am_zug.value, bereits_geworfen.value)
+    console.log(bereits_geworfen.value)
     let punkte_voher = players.value[am_zug.value - 1].score
     let condition1 = punkte_voher < value
     let condition2_1 = punkte_voher === value && faktor !== 2 
     let condition2_2 = punkte_voher === value &&  orginal_value !== "Bulls-Eye"
     let condition2 = condition2_1 && condition2_2
-    let condition3 = punkte_voher-value == 1
+    let condition3 = punkte_voher-value == 1 && bereits_geworfen.value == 2
     console.log(condition1, condition2_1, condition2_2, condition3)
     if(condition1 || condition2 || condition3){
         players.value[am_zug.value - 1].score
@@ -370,8 +356,8 @@ function wurf(value, faktor, orginal_value) {
 
 
     if (bereits_geworfen.value === 3) {
-        bereits_geworfen.value = 0
-        sleep(1000).then(() => {
+     
+        
             bereits_geworfen.value = 0
             console.log(players.value.length)
             console.log(am_zug.value)
@@ -400,7 +386,7 @@ function wurf(value, faktor, orginal_value) {
             players.value[am_zug.value-1].score_voher = players.value[am_zug.value-1].score
             save_changes(players.value, am_zug.value, bereits_geworfen.value)
 
-        })
+        
 
     }
     save_changes(players.value, am_zug.value, bereits_geworfen.value)
