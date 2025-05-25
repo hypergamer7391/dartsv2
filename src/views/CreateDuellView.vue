@@ -6,6 +6,8 @@
 
                 <input v-model="pointsstart"  placeholder="Startpunkte eingeben"
                 class="input startpoints" />
+                <input v-model="legs"  placeholder="Legs eingeben"
+                class="input startpoints" />
 
                 <div class="input-container">
                     <input v-model="newPlayer" @keyup.enter="addPlayer" placeholder="Spielername eingeben"
@@ -34,13 +36,14 @@
 </template>
 
 <script setup>
-import { ref, defineEmits } from 'vue';
+import { ref } from 'vue';
 
 const newPlayer = ref("");
 const players = ref([]);
 const visible = ref(true)
 const draggedIndex = ref(null);
 const pointsstart = ref()
+const legs = ref()
 
 const emit = defineEmits(["roundCreated", "cancle-create"]);
 import { useRoute, useRouter } from 'vue-router'
@@ -70,10 +73,15 @@ async function createRound() {
     emit("roundCreated", players.value, pointsstart.value);
     const neuesSpiel = {
     spieler: [players.value[0], players.value[1]],
-    punkte: [pointsstart.value, pointsstart.value]
+    punkte: [pointsstart.value, pointsstart.value],
+    am_zug: 1,
+    bereits_geworfen: 0,
+    start: pointsstart.value,
+    legs: legs.value
+
   }
 
-  const res = await fetch('https://dartsv2backend.onrender.com/api/games', {
+  const res = await fetch('http://localhost:2000/api/games', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'

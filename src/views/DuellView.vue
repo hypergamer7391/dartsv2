@@ -69,6 +69,7 @@
             </div>
         </div>
     </div>
+    <div>{{legs}}</div>
     <Popup ref="WinScreen">
         <h1>Spiel beendet!</h1>
         <p>Der Spieler {{ rangliste[0].name }} hat gewonnen</p>
@@ -81,9 +82,7 @@
         <button class="newgame" @click="handleRematch">Spiel wiederholen</button>
 
     </Popup>
-    <newgamecreate v-if="NewGamePopupopen" @roundCreated="handleRoundCreated"  @cancle-create="handleCreateCancel">
-
-    </newgamecreate>
+   
 </template>
     
 
@@ -118,8 +117,9 @@ console.log(id);
 
 const start_score = ref(0)
 
+
 /* Component deklarierungen */
-const WinScreen = ref()
+const WinScreen = ref(false)
 const NewGamePopupopen = ref(false)
 const rangliste = ref([])
 
@@ -156,10 +156,17 @@ const bereits_geworfen = ref(0)
 const multiplikator = ref(1)
 const roundData = ref()
 const menu_auf = ref(false)
+const start = ref(501)
+const legs = ref(0)
+
+const emit = defineEmits(["roundCreated", "cancle-create"]);
 
 onMounted(() => {
+  
   load_all_players()
+  
   toggleFullscreen()
+
 });
 
 
@@ -175,31 +182,37 @@ function startseite(){
     router.push(`/`);
 }
 
-const handleRoundCreated = (newNames, points) => {
-    console.log("default", defaultplayers.value[0])
-    NewGamePopupopen.value = false
-    aktuelle_runde.value.players = newNames
-    aktuelle_runde.value.start = points
-    localStorage.setItem('akt_runde_players', JSON.stringify(aktuelle_runde.value.players))
-    localStorage.setItem('akt_runde_start', aktuelle_runde.value.start)
-    
-
-    roundData.value = newNames;
-    players.value = newNames.map((name, index) => ({
-        ...defaultplayers.value[0], // Kopiere die Struktur von defaultplayers
-        name: name, // Ersetze den Namen mit dem neuen aus dem Popup
-        score: points,
-    }));
-    bereits_geworfen.value = 0
-    am_zug.value = 1
-    save_changes(players.value, am_zug.value, bereits_geworfen.value)
-    console.log("Spieler für neue Runde:", roundData.value);
-};
 
 async function handleRematch(){
-    location.reload();
-   
-    WinScreen.value.close()
+    start.value = players.value[1].start
+    console.log(start.value)
+
+    let playernames = [players.value[0].name, players.value[1].name]
+    emit("roundCreated", playernames.value, start.value);
+    const neuesSpiel = {
+    spieler: [playernames[0], playernames[1]],
+    punkte: [start.value, start.value],
+    am_zug: 1,
+    bereits_geworfen: 0,
+    start: start.value
+
+  }
+
+  const res = await fetch('http://localhost:2000/api/games', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(neuesSpiel)
+  })
+
+  const hinzugefuegt = await res.json()
+  console.log(hinzugefuegt)
+
+  router.push(`/duell/${hinzugefuegt.id}`).then(() => {
+  window.location.reload();
+});
+  
 }
 
 const handleCreateCancel = () => {
@@ -249,7 +262,7 @@ const handleCreateCancel = () => {
 } */
 
 async function  load_all_players() {
-    const res = await fetch(`https://dartsv2backend.onrender.com/api/games/${id.value}`)
+    const res = await fetch(`http://localhost:2000/api/games/${id.value}`)
     game.value = await res.json()
     console.log(game.value)
     players.value = game.value.players
@@ -261,6 +274,10 @@ async function  load_all_players() {
             return
         }
     });
+    am_zug.value = game.value.am_zug
+    bereits_geworfen.value = game.value.bereits_geworfen
+    legs.value = game.value.max_legs
+    console.log(game)
 }
 
 async function save_changes(players, am_zug, bereits_geworfen){
@@ -270,12 +287,12 @@ async function save_changes(players, am_zug, bereits_geworfen){
     localStorage.setItem('am_zug', JSON.stringify(am_zug));
     localStorage.setItem('bereits_geworfen', JSON.stringify(bereits_geworfen));
     let data = Number(id.value)
-    const res = await fetch('https://dartsv2backend.onrender.com/api/game/update', {
+    const res = await fetch('http://localhost:2000/api/game/update', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify( {id: data})
+    body: JSON.stringify( {id: data, players: players, am_zug: am_zug, bereits_geworfen: bereits_geworfen})
   })
   
     
@@ -299,6 +316,7 @@ function erstelleRangliste() {
 }
 
 function wurf(value, faktor, orginal_value) {
+    
     save_changes(players.value, am_zug.value, bereits_geworfen.value)
     console.log(bereits_geworfen.value)
     let punkte_voher = players.value[am_zug.value - 1].score
