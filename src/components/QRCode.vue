@@ -6,7 +6,7 @@
 
 <script setup>
 import { defineProps } from 'vue';
-import VueQrcode from 'vue-qrcode';
+/* import VueQrcode from 'vue-qrcode'; */
 
 defineProps({
   text: {
