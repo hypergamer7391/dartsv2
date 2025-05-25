@@ -1,61 +1,68 @@
 <template>
     <div id="app">
         <div class="right">
+            <div class="legs-anzeigen">
+                <div class="player_legs">{{ players[0]?.legs }}</div>
+                <div class="first_to">First to {{ legs }} Legs</div>
+                <div class="player_legs">{{ players[1]?.legs }}</div>
+
+            </div>
             <div class="player-anzeigen">
 
-            <div class="player-anzeige akt_player">
-                <div class="top-section">
-                    <div class="player-name">{{ players[0]?.name }}</div>
-                    <div class="score">{{ get_score_for_player(players[0]?.name) }}</div>
+                <div class="player-anzeige akt_player">
+                    <div class="top-section">
+                        <div class="player-name">{{ players[0]?.name }}</div>
+                        <div class="score">{{ get_score_for_player(players[0]?.name) }}</div>
+                    </div>
+                    <div class="throws">
+                        <div class="throw-box" :class="{ active: am_zug == 1 && bereits_geworfen == 0 }">
+
+                            <div class="geworfen-score">{{ players[0]?.wurf1 }}</div>
+                            <div class="needed-score">{{ players[0]?.wurf1_feld }}</div>
+                        </div>
+                        <div class="throw-box" :class="{ active: am_zug == 1 && bereits_geworfen == 1 }">
+                            <div class="needed-score">{{ players[0]?.wurf2_feld }}</div>
+                            <div class="geworfen-score">{{ players[0]?.wurf2 }}</div>
+                        </div>
+                        <div class="throw-box" :class="{ active: am_zug == 1 && bereits_geworfen == 2 }">
+                            <div class="needed-score">{{ players[0]?.wurf3_feld }}</div>
+                            <div class="geworfen-score">{{ players[0]?.wurf3 }}</div>
+                        </div>
+                    </div>
+                    <div class="average">Average: {{ players[0]?.average }}</div>
+                    <div class="average" v-if="am_zug == 1">Am Zug</div>
+
+
                 </div>
-                <div class="throws">
-                    <div class="throw-box" :class="{ active: am_zug == 1 && bereits_geworfen == 0 }">
 
-                        <div class="geworfen-score" 
-                        >{{ players[0]?.wurf1 }}</div>
-                        <div class="needed-score">{{ players[0]?.wurf1_feld }}</div>
+
+                <div class="player-anzeige akt_player">
+                    <div class="top-section">
+                        <div class="player-name">{{ players[1]?.name }}</div>
+                        <div class="score">{{ get_score_for_player(players[1]?.name) }}</div>
                     </div>
-                    <div class="throw-box" :class="{ active: am_zug == 1 && bereits_geworfen == 1 }">
-                        <div class="needed-score">{{ players[0]?.wurf2_feld }}</div>
-                        <div class="geworfen-score">{{ players[0]?.wurf2 }}</div>
+                    <div class="throws">
+                        <div class="throw-box" :class="{ active: am_zug == 2 && bereits_geworfen == 0 }">
+
+                            <div class="geworfen-score">{{ players[1]?.wurf1 }}</div>
+                            <div class="needed-score">{{ players[1]?.wurf1_feld }}</div>
+                        </div>
+                        <div class="throw-box" :class="{ active: am_zug == 2 && bereits_geworfen == 1 }">
+                            <div class="needed-score">{{ players[1]?.wurf2_feld }}</div>
+                            <div class="geworfen-score">{{ players[1]?.wurf2 }}</div>
+                        </div>
+                        <div class="throw-box" :class="{ active: am_zug == 2 && bereits_geworfen == 2 }">
+                            <div class="needed-score">{{ players[1]?.wurf3_feld }}</div>
+                            <div class="geworfen-score">{{ players[1]?.wurf3 }}</div>
+                        </div>
                     </div>
-                    <div class="throw-box" :class="{ active: am_zug == 1 && bereits_geworfen == 2 }">
-                        <div class="needed-score">{{ players[0]?.wurf3_feld }}</div>
-                        <div class="geworfen-score">{{ players[0]?.wurf3 }}</div>
-                    </div>
+                    <div class="average">Average: {{ players[1]?.average }}</div>
+                    <div class="average" v-if="am_zug == 2">Am Zug</div>
+
                 </div>
-                <div class="average">Average: {{ players[0]?.average }}</div>
-                <div class="average" v-if="am_zug == 1">Am Zug</div>
-
-
             </div>
-           
-            
-            <div class="player-anzeige akt_player">
-                <div class="top-section">
-                    <div class="player-name">{{ players[1]?.name }}</div>
-                    <div class="score">{{ get_score_for_player(players[1]?.name) }}</div>
-                </div>
-                <div class="throws">
-                    <div class="throw-box" :class="{ active: am_zug == 2 && bereits_geworfen == 0 }">
 
-                        <div class="geworfen-score">{{ players[1]?.wurf1 }}</div>
-                        <div class="needed-score">{{ players[1]?.wurf1_feld }}</div>
-                    </div>
-                    <div class="throw-box" :class="{ active: am_zug == 2 && bereits_geworfen == 1 }">
-                        <div class="needed-score">{{ players[1]?.wurf2_feld }}</div>
-                        <div class="geworfen-score">{{ players[1]?.wurf2 }}</div>
-                    </div>
-                    <div class="throw-box" :class="{ active: am_zug == 2 && bereits_geworfen == 2 }">
-                        <div class="needed-score">{{ players[1]?.wurf3_feld }}</div>
-                        <div class="geworfen-score">{{ players[1]?.wurf3 }}</div>
-                    </div>
-                </div>
-                <div class="average">Average: {{ players[1]?.average }}</div>
-                <div class="average" v-if="am_zug == 2">Am Zug</div>
 
-            </div>
-            </div>
 
 
 
@@ -69,42 +76,42 @@
             </div>
         </div>
     </div>
-    <div>{{legs}}</div>
+
     <Popup ref="WinScreen">
         <h1>Spiel beendet!</h1>
         <p>Der Spieler {{ rangliste[0].name }} hat gewonnen</p>
         <li v-for="player in rangliste" :key="player.name" class="player-item">
-                        <span class="name">{{ player.name }}</span>
-                        <span class="average">&#8709; {{ player.average }}</span>
-                        <span class="score">{{ player.score }}</span>
+            <span class="name">{{ player.name }}</span>
+            <span class="average">&#8709; {{ player.average }}</span>
+            <span class="score">{{ player.score }}</span>
         </li>
         <button class="newgame" @click="newgame">Neues Spiel</button>
         <button class="newgame" @click="handleRematch">Spiel wiederholen</button>
 
     </Popup>
-   
+
 </template>
-    
+
 
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import Popup  from '../components/PopUp.vue'
+import Popup from '../components/PopUp.vue'
 
 import { useRoute, useRouter } from 'vue-router'
 
 const fullscreenElement = ref(null)
 
 function toggleFullscreen() {
-  const el = fullscreenElement.value
+    const el = fullscreenElement.value
 
-  if (!document.fullscreenElement) {
-    el?.requestFullscreen().catch(err => {
-      console.error(`Fehler beim Aktivieren von Fullscreen: ${err.message}`)
-    })
-  } else {
-    document.exitFullscreen()
-  }
+    if (!document.fullscreenElement) {
+        el?.requestFullscreen().catch(err => {
+            console.error(`Fehler beim Aktivieren von Fullscreen: ${err.message}`)
+        })
+    } else {
+        document.exitFullscreen()
+    }
 }
 
 const router = useRouter()
@@ -123,28 +130,7 @@ const WinScreen = ref(false)
 const NewGamePopupopen = ref(false)
 const rangliste = ref([])
 
-const newPlayers = ref([])
-const defaultplayers = ref([
-    {
-        name: "player1",
-        score: start_score.value,
-        score_voher: start_score.value,
-        wurf1: 0,
-        wurf2: 0,
-        wurf3: 0,
-        wurf1_feld: 0,
-        wurf2_feld: 0,
-        wurf3_feld: 0,
-        alle_wurfe: [],
-        average: 0,
 
-    }
-])
-
-const aktuelle_runde = ref({
-    players: [],
-    start: 100
-})
 
 const game = ref(null)
 
@@ -162,107 +148,62 @@ const legs = ref(0)
 const emit = defineEmits(["roundCreated", "cancle-create"]);
 
 onMounted(() => {
-  
-  load_all_players()
-  
-  toggleFullscreen()
+
+    load_all_players()
+
+    toggleFullscreen()
 
 });
 
 
-function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-}
 
-function toggle_menu(){
-    menu_auf.value = !menu_auf.value
-}
 
-function startseite(){
+function startseite() {
     router.push(`/`);
 }
 
 
-async function handleRematch(){
+async function handleRematch() {
     start.value = players.value[1].start
     console.log(start.value)
 
     let playernames = [players.value[0].name, players.value[1].name]
     emit("roundCreated", playernames.value, start.value);
     const neuesSpiel = {
-    spieler: [playernames[0], playernames[1]],
-    punkte: [start.value, start.value],
-    am_zug: 1,
-    bereits_geworfen: 0,
-    start: start.value
+        spieler: [playernames[0], playernames[1]],
+        punkte: [start.value, start.value],
+        am_zug: 1,
+        bereits_geworfen: 0,
+        start: start.value,
+        legs: legs.value,
+        plegs1: 0,
+        plegs2: 0,
 
-  }
 
-  const res = await fetch('http://localhost:2000/api/games', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(neuesSpiel)
-  })
+    }
 
-  const hinzugefuegt = await res.json()
-  console.log(hinzugefuegt)
+    const res = await fetch('https://dartsv2backend.onrender.com/api/games', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(neuesSpiel)
+    })
 
-  router.push(`/duell/${hinzugefuegt.id}`).then(() => {
-  window.location.reload();
-});
-  
-}
+    const hinzugefuegt = await res.json()
+    console.log(hinzugefuegt)
 
-const handleCreateCancel = () => {
-    console.log("test")
-    NewGamePopupopen.value = false
-    players.value.forEach(element => {
-        if (element.score == 0){
-            erstelleRangliste()
-        }
+    router.push(`/duell/${hinzugefuegt.id}`).then(() => {
+        window.location.reload();
     });
 
 }
 
-/* async function load_all_players() {
-    console.log("default", defaultplayers.value)
-    if (localStorage.getItem('player') && localStorage.getItem('bereits_geworfen') && localStorage.getItem('am_zug')) {
-        if(localStorage.getItem('player') == []){
-            players.value = [...defaultplayers.value];  // Falls keine Daten gespeichert sind, Initialisierung mit Defaultwerten.
-            save_changes(players.value, am_zug.value, bereits_geworfen.value)
-        }
-        else{
-        console.log("saved")
-        let savedData = null
-        savedData = localStorage.getItem('player');
-        players.value = JSON.parse(savedData);
-        console.log("local ", localStorage.getItem('am_zug'))
-        am_zug.value = JSON.parse(localStorage.getItem('am_zug'))
-        console.log("amzug", am_zug.value)
-        bereits_geworfen.value = JSON.parse(localStorage.getItem('bereits_geworfen'))}
-    } else {
-        players.value = [...defaultplayers.value];  // Falls keine Daten gespeichert sind, Initialisierung mit Defaultwerten.
-        save_changes(players.value, am_zug.value, bereits_geworfen.value)
-    }
-    if(localStorage.getItem('akt_runde_players')){
-        aktuelle_runde.value.players = localStorage.getItem('akt_runde_players')
-        aktuelle_runde.value.start = localStorage.getItem('akt_runde_start')
-    }
-    console.log(players.value)
-    players.value.forEach(element => {
-        console.log(element.score)
-        if (element.score === 0) {
-            erstelleRangliste()
-            
-            return
-        }
-    });
-} */
 
-async function  load_all_players() {
-    const res = await fetch(`http://localhost:2000/api/games/${id.value}`)
+
+
+async function load_all_players() {
+    const res = await fetch(`https://dartsv2backend.onrender.com/api/games/${id.value}`)
     game.value = await res.json()
     console.log(game.value)
     players.value = game.value.players
@@ -270,7 +211,7 @@ async function  load_all_players() {
         console.log(element.score)
         if (element.score === 0) {
             erstelleRangliste()
-            
+
             return
         }
     });
@@ -280,22 +221,22 @@ async function  load_all_players() {
     console.log(game)
 }
 
-async function save_changes(players, am_zug, bereits_geworfen){
+async function save_changes(players, am_zug, bereits_geworfen) {
     console.log("save")
     console.trace()
     localStorage.setItem('player', JSON.stringify(players));
     localStorage.setItem('am_zug', JSON.stringify(am_zug));
     localStorage.setItem('bereits_geworfen', JSON.stringify(bereits_geworfen));
     let data = Number(id.value)
-    const res = await fetch('http://localhost:2000/api/game/update', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify( {id: data, players: players, am_zug: am_zug, bereits_geworfen: bereits_geworfen})
-  })
-  
-    
+    const res = await fetch('https://dartsv2backend.onrender.com/api/game/update', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ id: data, players: players, am_zug: am_zug, bereits_geworfen: bereits_geworfen, max_legs: legs.value })
+    })
+
+
 }
 
 const isHighlighted = (value) => {
@@ -312,71 +253,114 @@ function erstelleRangliste() {
     rangliste.value = [...players.value]
         .sort((a, b) => a.score - b.score)
         .map((player, index) => ({ ...player, rank: index + 1 }))
-        
+
 }
 
-function wurf(value, faktor, orginal_value) {
-    
+async function wurf(value, faktor, orginal_value) {
+
     save_changes(players.value, am_zug.value, bereits_geworfen.value)
     console.log(bereits_geworfen.value)
     let punkte_voher = players.value[am_zug.value - 1].score
     let condition1 = punkte_voher < value
-    let condition2_1 = punkte_voher === value && faktor !== 2 
-    let condition2_2 = punkte_voher === value &&  orginal_value == "Bull" && faktor === 2
+    let condition2_1 = punkte_voher === value && faktor !== 2
+    let condition2_2 = punkte_voher === value && orginal_value == "Bull" && faktor === 2
     let condition2 = condition2_1 && condition2_2
-    let condition3 = punkte_voher-value == 1 && bereits_geworfen.value == 2
+    let condition3 = punkte_voher - value == 1 && bereits_geworfen.value == 2
     console.log(condition1, condition2_1, condition2_2, condition3)
-    if(condition1 || condition2 || condition3){
+    if (condition1 || condition2 || condition3) {
         players.value[am_zug.value - 1].score
         bereits_geworfen.value = 3
-        players.value[am_zug.value-1].score = players.value[am_zug.value-1].score_voher
+        players.value[am_zug.value - 1].score = players.value[am_zug.value - 1].score_voher
     }
-    else{
+    else {
 
-    bereits_geworfen.value++
-    
-    players.value[am_zug.value - 1].score = punkte_voher - value
-    let wurf = `wurf${bereits_geworfen.value}`;
-    players.value[am_zug.value - 1][wurf] = value
-    let new_value = 0
-    if (faktor !== 1) {
-        if (faktor === 2) {
-            let wurf = `wurf${bereits_geworfen.value}_feld`;
-            new_value = `D${orginal_value}`
-            players.value[am_zug.value - 1][wurf] = new_value
+        bereits_geworfen.value++
+
+        players.value[am_zug.value - 1].score = punkte_voher - value
+        let wurf = `wurf${bereits_geworfen.value}`;
+        players.value[am_zug.value - 1][wurf] = value
+        let new_value = 0
+        if (faktor !== 1) {
+            if (faktor === 2) {
+                let wurf = `wurf${bereits_geworfen.value}_feld`;
+                new_value = `D${orginal_value}`
+                players.value[am_zug.value - 1][wurf] = new_value
+            }
+            else {
+                let wurf = `wurf${bereits_geworfen.value}_feld`;
+                new_value = `T${orginal_value}`
+                players.value[am_zug.value - 1][wurf] = new_value
+            }
         }
         else {
             let wurf = `wurf${bereits_geworfen.value}_feld`;
-            new_value = `T${orginal_value}`
+            new_value = `${orginal_value}`
             players.value[am_zug.value - 1][wurf] = new_value
         }
+        players.value[am_zug.value - 1].alle_wurfe.push(value)
+        let gesamt = 0
+        players.value[am_zug.value - 1].alle_wurfe.forEach(element => {
+            gesamt = gesamt + parseInt(element)
+            console.log(gesamt)
+        });
+        console.log(players.value[am_zug.value - 1].alle_wurfe.length)
+        let average = Math.round((gesamt / players.value[am_zug.value - 1].alle_wurfe.length) * 100) / 100;
+        players.value[am_zug.value - 1].average = average
+
+        save_changes(players.value, am_zug.value, bereits_geworfen.value)
     }
-    else {
-        let wurf = `wurf${bereits_geworfen.value}_feld`;
-        new_value = `${orginal_value}`
-        players.value[am_zug.value - 1][wurf] = new_value
-    }
-    players.value[am_zug.value - 1].alle_wurfe.push(value)
-    let gesamt = 0
-    players.value[am_zug.value - 1].alle_wurfe.forEach(element => {
-        gesamt = gesamt + parseInt(element )
-        console.log(gesamt)
-    });
-    console.log(players.value[am_zug.value-1].alle_wurfe.length)
-    let average = Math.round((gesamt/players.value[am_zug.value-1].alle_wurfe.length) * 100) / 100;
-    players.value[am_zug.value-1].average = average
-    
-    save_changes(players.value, am_zug.value, bereits_geworfen.value)
-}
-    if (players.value[am_zug.value - 1].score === 0){
-        WinScreen.value.open()
-        erstelleRangliste()
-    }
+   
+
+    if (players.value[am_zug.value - 1].score === 0) {
+        players.value[am_zug.value - 1].legs++
+        if (players.value[am_zug.value - 1].legs < legs.value) {
+            start.value = players.value[1].start
+            console.log(start.value)
+
+            let playernames = [players.value[0].name, players.value[1].name]
+            emit("roundCreated", playernames.value, start.value);
+            const neuesSpiel = {
+                spieler: [playernames[0], playernames[1]],
+                punkte: [start.value, start.value],
+                am_zug: 1,
+                bereits_geworfen: 0,
+                start: start.value,
+                legs: legs.value,
+                plegs1: players.value[0].legs,
+                plegs2: players.value[1].legs,
+                
 
 
-    if (bereits_geworfen.value === 3) {
-     
+            }
+
+            const res = await fetch('https://dartsv2backend.onrender.com/api/games', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(neuesSpiel)
+            })
+
+            const hinzugefuegt = await res.json()
+            console.log(hinzugefuegt)
+
+            router.push(`/duell/${hinzugefuegt.id}`).then(() => {
+                window.location.reload();})
+            }
         
+        else{
+            WinScreen.value.open()
+            erstelleRangliste()
+        }
+    }
+
+        
+    
+
+
+        if (bereits_geworfen.value === 3) {
+
+
             bereits_geworfen.value = 0
             console.log(players.value.length)
             console.log(am_zug.value)
@@ -402,86 +386,90 @@ function wurf(value, faktor, orginal_value) {
                 am_zug.value++
 
             }
-            players.value[am_zug.value-1].score_voher = players.value[am_zug.value-1].score
+            players.value[am_zug.value - 1].score_voher = players.value[am_zug.value - 1].score
             save_changes(players.value, am_zug.value, bereits_geworfen.value)
 
-        
-
-    }
-    save_changes(players.value, am_zug.value, bereits_geworfen.value)
 
 
-}
-
-function button_click(value) {
-    if (!isNaN(value)) {
-        wurf(value * multiplikator.value, multiplikator.value, value)
-        multiplikator.value = 1
-    }
-    else if (value == "2x") {
-        if (multiplikator.value !== 2) {
-            multiplikator.value = 2
         }
-        else {
+        save_changes(players.value, am_zug.value, bereits_geworfen.value)
+
+
+    }
+
+    function button_click(value) {
+        if (!isNaN(value)) {
+            wurf(value * multiplikator.value, multiplikator.value, value)
+            multiplikator.value = 1
+        }
+        else if (value == "2x") {
+            if (multiplikator.value !== 2) {
+                multiplikator.value = 2
+            }
+            else {
+                multiplikator.value = 1
+            }
+        }
+        else if (value == "3x") {
+            if (multiplikator.value !== 3) {
+                multiplikator.value = 3
+            }
+            else {
+                multiplikator.value = 1
+            }
+        }
+        else if (value == "Bull" && multiplikator.value === 1) {
+            wurf(25, 1, "Bull")
+            multiplikator.value = 1
+        }
+        else if (value == "Bull" && multiplikator.value === 2) {
+            wurf(50, 1, "Bulls-Eye")
             multiplikator.value = 1
         }
     }
-    else if (value == "3x") {
-        if (multiplikator.value !== 3) {
-            multiplikator.value = 3
+
+    function next_player() {
+        let nextplayer = undefined
+        if (am_zug.value == players.value.length) {
+            nextplayer = 0
         }
         else {
-            multiplikator.value = 1
+            nextplayer = am_zug.value
         }
+
+
+
+        return nextplayer
     }
-    else if (value == "Bull" && multiplikator.value === 1) { wurf(25, 1, "Bull")
-    multiplikator.value = 1
-     }
-    else if (value == "Bull" && multiplikator.value === 2) { wurf(50, 1, "Bulls-Eye")
-    multiplikator.value = 1
-     }
-}
 
-function next_player() {
-    let nextplayer = undefined
-    if (am_zug.value == players.value.length) {
-        nextplayer = 0
+    function get_score_for_player(player) {
+
+
+        let score = 0
+        players.value.forEach((element => {
+            if (element.name === player) {
+                score = element.score
+            }
+        }))
+
+        return score
     }
-    else {
-        nextplayer = am_zug.value
+
+    function newgame() {
+        WinScreen.value.close()
+        router.push(`/fast-duell/create`);
     }
-    
-    
-    
-    return nextplayer
-}
-
-function get_score_for_player(player) {
-    
-
-    let score = 0
-    players.value.forEach((element => {
-        if (element.name === player) {
-            score = element.score
-        }
-    }))
-    
-    return score
-}
-
-function newgame(){
-    WinScreen.value.close()
-    router.push(`/fast-duell/create`);
-}
 
 </script>
 
 
 <style>
-body,html {
+body,
+html {
     margin: 0;
     padding: 0;
 }
+
 * {
     box-sizing: border-box;
 }
@@ -495,10 +483,8 @@ body {
     width: 100vw;
     font-family: Arial, sans-serif;
 }
-
 </style>
 <style scoped>
-
 .newgame {
     width: 100%;
     padding: 15px;
@@ -508,12 +494,14 @@ body {
     border: 2px solid black;
     border-radius: 5px;
     cursor: pointer;
-    transition: background-color 0.3s; /* Übergang für die Hintergrundfarbe */
+    transition: background-color 0.3s;
+    /* Übergang für die Hintergrundfarbe */
     margin-top: 20px;
 }
 
 .newgame:hover {
-    background-color: #F39C12; /* Ändert die Hintergrundfarbe beim Hover */
+    background-color: #F39C12;
+    /* Ändert die Hintergrundfarbe beim Hover */
 }
 
 
@@ -549,15 +537,18 @@ body {
     width: 100%;
     padding: 10px;
     border-bottom: 1px solid #ccc;
-    transition: transform 0.3s ease; /* Übergang für Transformation */
+    transition: transform 0.3s ease;
+    /* Übergang für Transformation */
 }
 
 .player-item:hover {
-    transform: scale(1.05); /* Vergrößert das Element */
-    background-color: #191919; /* Ändert die Hintergrundfarbe beim Hover */
+    transform: scale(1.05);
+    /* Vergrößert das Element */
+    background-color: #191919;
+    /* Ändert die Hintergrundfarbe beim Hover */
 }
 
-.menu{
+.menu {
     margin-left: 5%;
     margin-bottom: 5%;
     width: 90%;
@@ -569,27 +560,27 @@ body {
 
 }
 
-.menubutton{
+.menubutton {
     width: 100%;
     height: 25%;
     background: #FFD700;
-    transition: transform 0.3s ease; /* Übergang für Transformation */
+    transition: transform 0.3s ease;
+    /* Übergang für Transformation */
     color: black;
 }
 
-.menubutton:hover{
-    transform: scale(1.05); /* Vergrößert das Element */
-    background-color: #F39C12; /* Ändert die Hintergrundfarbe beim Hover */
+.menubutton:hover {
+    transform: scale(1.05);
+    /* Vergrößert das Element */
+    background-color: #F39C12;
+    /* Ändert die Hintergrundfarbe beim Hover */
 }
 
 .name {
     font-weight: bold;
 }
 
-.score {
-    color: red;
-    /* Optional: Score farblich hervorheben */
-}
+
 .player-anzeige {
     display: flex;
     flex-direction: column;
@@ -599,14 +590,33 @@ body {
 
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
     gap: 10px;
-    height: 40vh;
+    height: 100%;
     width: 50vw;
 
 }
-.player-anzeigen{
+
+.player-anzeigen {
     display: flex;
     flex-direction: row;
     height: 30vh;
+}
+
+.legs-anzeigen {
+    display: flex;
+    flex-direction: row;
+    height: 10vh;
+    width: 100%;
+    background: #333;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+}
+
+.player_legs {
+    font-size: 2em;
+    font-weight: bold;
+    color: #FFD700;
+    margin: 0%;
 }
 
 .akt_player {
@@ -649,12 +659,15 @@ body {
     font-weight: bold;
     color: white;
     position: relative;
-    transition: transform 0.3s ease-in-out; /* Übergang für Transformation */
+    transition: transform 0.3s ease-in-out;
+    /* Übergang für Transformation */
 }
 
 .throw-box:hover {
-    transform: scale(1.05); /* Vergrößert die Box beim Hover */
-    background-color: #191919; /* Ändert die Hintergrundfarbe */
+    transform: scale(1.05);
+    /* Vergrößert die Box beim Hover */
+    background-color: #191919;
+    /* Ändert die Hintergrundfarbe */
 }
 
 .needed-score {
@@ -698,7 +711,7 @@ body {
     /* Breite anpassen */
     height: 60vh;
     /* Höhe anpassen */
-    
+
     background: #333;
     /* Hintergrund für bessere Sichtbarkeit */
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
@@ -714,13 +727,14 @@ body {
     align-items: center;
     font-size: 1.5rem;
     border-radius: 5px;
-    transition: all 0.3s ease; /* Übergang für alle Eigenschaften */
+    transition: all 0.3s ease;
+    /* Übergang für alle Eigenschaften */
 }
 
-.number:hover {
-    background-color: #FF9D00; /* Ändert die Hintergrundfarbe */
+/*.number:hover {
+    background-color: #FF9D00;
     
-}
+} */
 
 .orange {
     background-color: #ff9d00;
@@ -734,13 +748,14 @@ body {
 @keyframes fadeIn {
     0% {
         opacity: 0;
-        transform: translateY(20px); /* Startet leicht unterhalb */
+        transform: translateY(20px);
+        /* Startet leicht unterhalb */
     }
+
     100% {
         opacity: 1;
-        transform: translateY(0); /* Normaler Zustand */
+        transform: translateY(0);
+        /* Normaler Zustand */
     }
 }
-
-
 </style>

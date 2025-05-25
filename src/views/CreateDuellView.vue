@@ -77,11 +77,14 @@ async function createRound() {
     am_zug: 1,
     bereits_geworfen: 0,
     start: pointsstart.value,
-    legs: legs.value
+    legs: legs.value,
+    plegs1: 0,
+    plegs2: 0,
+
 
   }
 
-  const res = await fetch('http://localhost:2000/api/games', {
+  const res = await fetch('https://dartsv2backend.onrender.com/api/games', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
