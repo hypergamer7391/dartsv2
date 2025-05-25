@@ -84,7 +84,7 @@ async function createRound() {
 
   }
 
-  const res = await fetch('https://dartsv2backend.onrender.com/api/games', {
+  const res = await fetch('http://localhost:2000/api/games', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'

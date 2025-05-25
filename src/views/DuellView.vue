@@ -30,7 +30,7 @@
                         </div>
                     </div>
                     <div class="average">Average: {{ players[0]?.average }}</div>
-                    <div class="average" v-if="am_zug == 1">Am Zug</div>
+           
 
 
                 </div>
@@ -57,7 +57,7 @@
                         </div>
                     </div>
                     <div class="average">Average: {{ players[1]?.average }}</div>
-                    <div class="average" v-if="am_zug == 2">Am Zug</div>
+                  
 
                 </div>
             </div>
@@ -83,7 +83,7 @@
         <li v-for="player in rangliste" :key="player.name" class="player-item">
             <span class="name">{{ player.name }}</span>
             <span class="average">&#8709; {{ player.average }}</span>
-            <span class="score">{{ player.score }}</span>
+            <span class="score">{{ player.legs }}</span>
         </li>
         <button class="newgame" @click="newgame">Neues Spiel</button>
         <button class="newgame" @click="handleRematch">Spiel wiederholen</button>
@@ -326,14 +326,12 @@ async function wurf(value, faktor, orginal_value) {
                 bereits_geworfen: 0,
                 start: start.value,
                 legs: legs.value,
-                plegs1: players.value[0].legs,
-                plegs2: players.value[1].legs,
-                
+                players: players.value
 
 
             }
 
-            const res = await fetch('https://dartsv2backend.onrender.com/api/games', {
+            const res = await fetch('https://dartsv2backend.onrender.com/api/games/leg', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -598,7 +596,7 @@ body {
 .player-anzeigen {
     display: flex;
     flex-direction: row;
-    height: 30vh;
+    height: 20vh;
 }
 
 .legs-anzeigen {
