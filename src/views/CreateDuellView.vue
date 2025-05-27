@@ -39,11 +39,11 @@
 import { ref } from 'vue';
 
 const newPlayer = ref("");
-const players = ref([]);
+const players = ref([1,2]);
 const visible = ref(true)
 const draggedIndex = ref(null);
-const pointsstart = ref()
-const legs = ref()
+const pointsstart = ref(100)
+const legs = ref(2)
 
 const emit = defineEmits(["roundCreated", "cancle-create"]);
 import { useRoute, useRouter } from 'vue-router'
@@ -84,7 +84,7 @@ async function createRound() {
 
   }
 
-  const res = await fetch('https://dartsv2backend.onrender.com/api/games', {
+  const res = await fetch('http://localhost:2000/api/games', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'

@@ -35,6 +35,11 @@
 
                 </div>
 
+               <div class="buttons">
+                <button class="round-button" @click="startseite"><Home class="w-6 h-6" /></button>
+                <button class="round-button" @click="ruckgangig"><ChevronFirst  class="w-6 h-6" /></button>
+               </div>
+
 
                 <div class="player-anzeige akt_player">
                     <div class="top-section">
@@ -99,6 +104,7 @@ import { ref, onMounted } from 'vue'
 import Popup from '../components/PopUp.vue'
 
 import { useRoute, useRouter } from 'vue-router'
+import { Home, ChevronFirst } from 'lucide-vue-next'
 
 const fullscreenElement = ref(null)
 
@@ -162,6 +168,35 @@ function startseite() {
     router.push(`/`);
 }
 
+function ruckgangig(){
+    if(bereits_geworfen.value >= 1 ) {
+        bereits_geworfen.value--
+        let wurf_id = players.value[am_zug.value-1].alle_wurfe.length % 3
+        let wurf = "wurf"+wurf_id
+        players.value[am_zug.value-1].score = players.value[am_zug.value-1].score + parseInt(players.value[am_zug.value-1].alle_wurfe[wurf_id-1]) 
+        let test = players.value[am_zug.value-1].alle_wurfe.splice(-1)
+        players.value[am_zug.value-1][wurf] = 0    
+        players.value[am_zug.value-1][`${wurf}_feld`] = 0    
+    }
+    else {
+        if(am_zug.value == 1){am_zug.value=2}else{am_zug.value=1}
+        console.log(start.value)
+        if( players.value[am_zug.value-1].score != players.value[0].start){
+        bereits_geworfen.value = 2
+        let wurf_id = 3
+        let wurf = "wurf"+wurf_id
+        console.log( players.value[am_zug.value-1].alle_wurfe[players.value[am_zug.value-1].alle_wurfe.length-1])
+        console.log(players.value[am_zug.value-1].score)
+        players.value[am_zug.value-1].score = players.value[am_zug.value-1].score + parseInt(players.value[am_zug.value-1].alle_wurfe[players.value[am_zug.value-1].alle_wurfe.length-1]) 
+        let test = players.value[am_zug.value-1].alle_wurfe.splice(-1)
+        players.value[am_zug.value-1][wurf] = 0    
+        players.value[am_zug.value-1][`${wurf}_feld`] = 0   
+        console.log(players.value[am_zug.value-1].score)}
+        else{if(am_zug.value == 1){am_zug.value=2}else{am_zug.value=1}}
+    }
+    save_changes(players.value, am_zug.value, bereits_geworfen.value)
+}
+
 
 async function handleRematch() {
     start.value = players.value[1].start
@@ -182,7 +217,7 @@ async function handleRematch() {
 
     }
 
-    const res = await fetch('https://dartsv2backend.onrender.com/api/games', {
+    const res = await fetch('http://localhost:2000/api/games', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -203,7 +238,7 @@ async function handleRematch() {
 
 
 async function load_all_players() {
-    const res = await fetch(`https://dartsv2backend.onrender.com/api/games/${id.value}`)
+    const res = await fetch(`http://localhost:2000/api/games/${id.value}`)
     game.value = await res.json()
     console.log(game.value)
     players.value = game.value.players
@@ -218,6 +253,7 @@ async function load_all_players() {
     am_zug.value = game.value.am_zug
     bereits_geworfen.value = game.value.bereits_geworfen
     legs.value = game.value.max_legs
+    
     console.log(game)
 }
 
@@ -228,7 +264,7 @@ async function save_changes(players, am_zug, bereits_geworfen) {
     localStorage.setItem('am_zug', JSON.stringify(am_zug));
     localStorage.setItem('bereits_geworfen', JSON.stringify(bereits_geworfen));
     let data = Number(id.value)
-    const res = await fetch('https://dartsv2backend.onrender.com/api/game/update', {
+    const res = await fetch('http://localhost:2000/api/game/update', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -331,7 +367,7 @@ async function wurf(value, faktor, orginal_value) {
 
             }
 
-            const res = await fetch('https://dartsv2backend.onrender.com/api/games/leg', {
+            const res = await fetch('http://localhost:2000/api/games/leg', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -578,6 +614,27 @@ body {
     font-weight: bold;
 }
 
+.buttons{
+    width: 5%;
+    background-color: #333;
+    border-bottom: 1px solid #ccc;
+    border-top: 1px solid #ccc;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center ;
+}
+
+.round-button{
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    background-color: #444;
+    border-radius: 100%;
+    display: flex;
+    align-items: center;
+    color: white;
+    margin-top: 10px;
+}
 
 .player-anzeige {
     display: flex;
@@ -585,8 +642,8 @@ body {
     align-items: center;
     background: #333;
     padding: 20px;
+    border-top: 1px solid #ccc;
 
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
     gap: 10px;
     height: 100%;
     width: 50vw;
