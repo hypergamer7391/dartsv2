@@ -217,7 +217,7 @@ async function handleRematch() {
 
     }
 
-    const res = await fetch('http://localhost:2000/api/games', {
+    const res = await fetch('https://dartsv2backend.onrender.com/api/games', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -238,7 +238,7 @@ async function handleRematch() {
 
 
 async function load_all_players() {
-    const res = await fetch(`http://localhost:2000/api/games/${id.value}`)
+    const res = await fetch(`https://dartsv2backend.onrender.com/api/games/${id.value}`)
     game.value = await res.json()
     console.log(game.value)
     players.value = game.value.players
@@ -264,7 +264,7 @@ async function save_changes(players, am_zug, bereits_geworfen) {
     localStorage.setItem('am_zug', JSON.stringify(am_zug));
     localStorage.setItem('bereits_geworfen', JSON.stringify(bereits_geworfen));
     let data = Number(id.value)
-    const res = await fetch('http://localhost:2000/api/game/update', {
+    const res = await fetch('https://dartsv2backend.onrender.com/api/game/update', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -367,7 +367,7 @@ async function wurf(value, faktor, orginal_value) {
 
             }
 
-            const res = await fetch('http://localhost:2000/api/games/leg', {
+            const res = await fetch('https://dartsv2backend.onrender.com/api/games/leg', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
