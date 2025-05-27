@@ -39,11 +39,11 @@
 import { ref } from 'vue';
 
 const newPlayer = ref("");
-const players = ref([1,2]);
+const players = ref([]);
 const visible = ref(true)
 const draggedIndex = ref(null);
-const pointsstart = ref(100)
-const legs = ref(2)
+const pointsstart = ref()
+const legs = ref()
 
 const emit = defineEmits(["roundCreated", "cancle-create"]);
 import { useRoute, useRouter } from 'vue-router'
