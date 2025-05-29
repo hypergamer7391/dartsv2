@@ -150,6 +150,7 @@ const roundData = ref()
 const menu_auf = ref(false)
 const start = ref(501)
 const legs = ref(0)
+const doppelout = ref(true)
 
 const emit = defineEmits(["roundCreated", "cancle-create"]);
 
@@ -213,6 +214,7 @@ async function handleRematch() {
         legs: legs.value,
         plegs1: 0,
         plegs2: 0,
+        doppelout:doppelout.value
 
 
     }
@@ -253,13 +255,12 @@ async function load_all_players() {
     am_zug.value = game.value.am_zug
     bereits_geworfen.value = game.value.bereits_geworfen
     legs.value = game.value.max_legs
-    
+    doppelout.value = game.value.doppelout
     console.log(game)
 }
 
 async function save_changes(players, am_zug, bereits_geworfen) {
-    console.log("save")
-    console.trace()
+    
     localStorage.setItem('player', JSON.stringify(players));
     localStorage.setItem('am_zug', JSON.stringify(am_zug));
     localStorage.setItem('bereits_geworfen', JSON.stringify(bereits_geworfen));
@@ -269,7 +270,7 @@ async function save_changes(players, am_zug, bereits_geworfen) {
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ id: data, players: players, am_zug: am_zug, bereits_geworfen: bereits_geworfen, max_legs: legs.value })
+        body: JSON.stringify({ id: data, players: players, am_zug: am_zug, bereits_geworfen: bereits_geworfen, max_legs: legs.value, doppelout:doppelout.value })
     })
 
 
@@ -300,15 +301,25 @@ async function wurf(value, faktor, orginal_value) {
     let condition1 = punkte_voher < value
     let condition2_1 = punkte_voher === value && faktor !== 2
     let condition2_2 = punkte_voher === value && orginal_value == "Bull" && faktor === 2
-    let condition2 = condition2_1 && condition2_2
+    let condition2_3 = condition2_1 || condition2_2
+    let condition2 = condition2_3 && doppelout.value
     let condition3 = punkte_voher - value == 1 && bereits_geworfen.value == 2
-    console.log(condition1, condition2_1, condition2_2, condition3)
+    console.log(condition1, condition2_1, condition2_2, condition3, condition2)
     if (condition1 || condition2 || condition3) {
+         console.log("1nn")
         players.value[am_zug.value - 1].score
         bereits_geworfen.value = 3
         players.value[am_zug.value - 1].score = players.value[am_zug.value - 1].score_voher
+        players.value[am_zug.value - 1].wurf1 = 0
+        players.value[am_zug.value - 1].wurf2 = 0
+        players.value[am_zug.value - 1].wurf3 = 0
+        players.value[am_zug.value - 1].wurf1_feld = 0
+        players.value[am_zug.value - 1].wurf2_feld = 0
+        players.value[am_zug.value - 1].wurf3_feld = 0
+        players.value[am_zug.value - 1].alle_wurfe.push(value)
     }
     else {
+        console.log("1ss")
 
         bereits_geworfen.value++
 
@@ -362,7 +373,8 @@ async function wurf(value, faktor, orginal_value) {
                 bereits_geworfen: 0,
                 start: start.value,
                 legs: legs.value,
-                players: players.value
+                players: players.value,
+                doppelout:doppelout.value
 
 
             }
@@ -379,7 +391,10 @@ async function wurf(value, faktor, orginal_value) {
             console.log(hinzugefuegt)
 
             router.push(`/duell/${hinzugefuegt.id}`).then(() => {
-                window.location.reload();})
+                console.log("new")
+                window.location.reload();
+                }
+                )
             }
         
         else{

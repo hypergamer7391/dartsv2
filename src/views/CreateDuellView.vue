@@ -9,6 +9,14 @@
                 <input v-model="legs"  placeholder="Legs eingeben"
                 class="input startpoints" />
 
+                <button @click="toggle_doppelout" v-if="doppelout == true"class="doppelout-round-button">
+                    Doppel-Out
+                </button>
+
+                <button @click="toggle_doppelout" v-if="doppelout == false"class="doppelout-round-button nicht-aktiv">
+                    Kein Doppel-Out
+                </button>
+
                 <div class="input-container">
                     <input v-model="newPlayer" @keyup.enter="addPlayer" placeholder="Spielername eingeben"
                         class="input" />
@@ -43,6 +51,7 @@ const players = ref([]);
 const visible = ref(true)
 const draggedIndex = ref(null);
 const pointsstart = ref()
+const doppelout = ref(false)
 const legs = ref()
 
 const emit = defineEmits(["roundCreated", "cancle-create"]);
@@ -69,6 +78,10 @@ const removePlayer = (index) => {
     players.value.splice(index, 1);
 };
 
+function toggle_doppelout(){
+    doppelout.value = !doppelout.value
+}
+
 async function createRound() {
     emit("roundCreated", players.value, pointsstart.value);
     const neuesSpiel = {
@@ -80,6 +93,7 @@ async function createRound() {
     legs: legs.value,
     plegs1: 0,
     plegs2: 0,
+    doppelout: doppelout.value
 
 
   }
@@ -250,6 +264,20 @@ const drop = (index) => {
     transition: background-color 0.3s ease;
 }
 
+.doppelout-round-button {
+    margin-bottom: 10px;
+    background-color: #FFD700;
+    color: #333;
+    padding: 0.75rem 1.25rem;
+    border-radius: 0.75rem;
+    width: 100%;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.nicht-aktiv{
+    background-color: #e2e8f07a;
+}
 .create-round-button:disabled {
     background-color: #e2e8f07a;
     cursor: not-allowed;
